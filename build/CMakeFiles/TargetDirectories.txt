@@ -1,0 +1,4 @@
+/ws/repos/coding/progs/ann-demo/build/CMakeFiles/edit_cache.dir
+/ws/repos/coding/progs/ann-demo/build/CMakeFiles/rebuild_cache.dir
+/ws/repos/coding/progs/ann-demo/build/CMakeFiles/ann-demo.dir
+/ws/repos/coding/progs/ann-demo/build/CMakeFiles/cudalib.dir

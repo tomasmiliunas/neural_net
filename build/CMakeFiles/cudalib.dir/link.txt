@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC -O3 -fopenmp   -shared -Wl,-soname,libcudalib.so -o libcudalib.so CMakeFiles/cudalib.dir/src/cudalib_generated_ann.cu.o /usr/local/cuda/lib64/libcudart_static.a -lpthread -ldl -lrt /usr/local/cuda/lib64/libcudart_static.a -lpthread -ldl -lrt 

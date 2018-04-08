@@ -1,0 +1,1 @@
+/usr/bin/c++   -O3 -fopenmp    CMakeFiles/ann-demo.dir/src/tests.cpp.o CMakeFiles/ann-demo.dir/src/ann.cpp.o CMakeFiles/ann-demo.dir/src/ann-demo.cpp.o  -o ann-demo -rdynamic libcudalib.so /usr/local/cuda/lib64/libcudart_static.a -lpthread -ldl -lrt /usr/local/cuda/lib64/libcudart_static.a -lpthread -ldl -lrt -Wl,-rpath,/ws/repos/coding/progs/ann-demo/build 
