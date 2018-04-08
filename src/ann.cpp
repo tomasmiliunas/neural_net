@@ -117,16 +117,13 @@ void print_all(AnnSerialDBL *SerialDBL, int sum, int mult, int i);
 void read_W(string filename, double *w_arr);
 void calc_sizes(int &sum, int &mult, Topology top);
 void test();
-void setTopology(Topology &top, int a[]);
+void setTopology(Topology &top, int a[], size_t length);
 int main()
 {
 	//test();
-	//int arr[] = {2,5,4,2};
-	//setTopology(topolygy, arr);
-topolygy.l.push_back(2);
-topolygy.l.push_back(5);
-topolygy.l.push_back(4);
-topolygy.l.push_back(2);
+	int arr[] = {2,5,4,2};
+	setTopology(topolygy, arr, sizeof(arr)/sizeof(arr[0]));
+
 	AnnSerialDBL  *SerialDBL=new AnnSerialDBL();
 
 	int sum = 0;
@@ -465,5 +462,10 @@ void calc_sizes(int &sum, int &mult, Topology top) {
 	}
 	for (int i = 0; i < topolygy.l.size() - 1; i++) {
 		mult += (topolygy.l.at(i) + 1)*topolygy.l.at(i + 1);
+	}
+}
+void setTopology(Topology &top, int a[], size_t length){
+	for(int i=0;i<length;i++){
+		top.l.push_back(a[i]);
 	}
 }
