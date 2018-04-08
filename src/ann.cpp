@@ -386,7 +386,7 @@ void AnnSerialDBL::feedForward(double *a, double *b)
 	int index = 0;
 
 	for (int i = 0; i<output_count; i++) {
-	//	cout << " a reiksmes: " << a_arr[s[L - 1] + i] << endl;
+		cout << " a reiksmes: " << a_arr[s[L - 1] + i] << endl;
 		if (max < a_arr[s[L - 1] + i]) {
 			max = a_arr[s[L - 1] + i];
 			index = i;
