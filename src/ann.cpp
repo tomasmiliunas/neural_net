@@ -23,8 +23,8 @@ double gL(double a, double z, double t);
 double w_gradient(int layer_id, int w_i, int w_j, double *a_arr, int *s, double *gll);
 double delta_w(double grad, double dw);
 void calc_gjl(double *a_arr, double *z_arr, double *t_arr, double *w_arr, int *s, int *sw, int L, int *l, double *gll);
-const double ETA = 0.2;
-const double ALPHA = 0.5;
+const double ETA = 0.3;
+const double ALPHA = 0.7;
 void file(string filename, double *a, int dydis);
 
 struct Topology
@@ -139,16 +139,16 @@ int main()
 	a1 = NULL;
 
 	XOR xo;
-	xo.generate(10000);
+	xo.generate(5000);
 	SerialDBL->train(xo.getInput(0), xo.getOutput(0));
 
 
-
-file("()a_arr.csv", SerialDBL->a_arr, sum);
+	file("()a_arr.csv", SerialDBL->a_arr, sum);
 	file("()z_arr.csv", SerialDBL->z_arr, sum);
 	file("()w_arr.csv", SerialDBL->w_arr, mult);
 	file("()dw_arr.csv", SerialDBL->dw_arr, mult);
 	file("()g_arr.csv", SerialDBL->gjl, sum);
+	
 	for (int i = 1; i < xo.getNumberOfSamples(); i++) {
 		SerialDBL->train(xo.getInput(i), xo.getOutput(i));
 	}
@@ -488,7 +488,7 @@ void file(string filename, double *a, int dydis) {
 void test(){
 	double abc = f(0.174108096560564);
 	cout << "Sluoksnis 2, a reiksmes: "<<endl;
-	cout << endl << setprecision(16) << abc << endl;
+	cout << setprecision(16) << abc << endl;
 	cout << f(0.858943449201941) << endl;
 	cout << f(0.7105014191106906) << endl;
 	cout << f(0.5135349589526047) << endl;
@@ -530,7 +530,7 @@ cout << "Sluoksnis 3, a reiksmes: "<<endl;
 	cout << f_deriv(0.858943449201941)*(0.1658986175115207* (0.00400616408497412) + 0.988525040437025*0.00224757206618774 + 0.445692312387463 * 0.000751644699311664 + 0.119083223975341 * 0.0025448405733972) << endl;
 	cout << f_deriv(0.7105014191106906)*(0.00466933194982757* (0.00400616408497412) + 0.00891140476699118*0.00224757206618774 + 0.3778801843317972 * 0.000751644699311664 + 0.5316629535813471 * 0.0025448405733972) << endl;
 	cout << f_deriv(0.5135349589526047)*(0.5711844233527634* (0.00400616408497412) + 0.6017639698477126*0.00224757206618774 + 0.6071657460249641 * 0.000751644699311664 + 0.1662343211157567 * 0.0025448405733972) << endl;
-	cout << f_deriv(0.3039948728904081)*(0.663045136875515* (0.00400616408497412) + 0.4507889034699545*0.00224757206618774 + 0.3521225623340556 * 0.000751644699311664 + 0.05703909421063875 * 0.0025448405733972) << endl;
+	cout << f_deriv(0.3039948728904081)*(0.663045136875515* (0.00400616408497412) + 0.4507889034699545*0.00224757206618774 + 0.3521225623340556 * 0.000751644699311664 + 0.05703909421063875 * 0.0025448405733972) << endl<<endl;
 
 cout << "Trecio sluoksnio g reiksmes:"<<endl;
 	cout << f_deriv(1.47437357600171)*(0.3019501327555162* (-0.011127632336779) + 0.8759727774895474*0.0340073790276742) << endl;
@@ -540,7 +540,7 @@ cout << "Trecio sluoksnio g reiksmes:"<<endl;
 
 cout << "Ketvirto(paskutinio) sluoksnio g reiksmes:"<<endl;
 	cout << f_deriv(3.26918192129915)*(0.963356303726183-0)<< endl;
-	cout << f_deriv(2.07109033332209)*(0.88806139555258 - 1) << endl;
+	cout << f_deriv(2.07109033332209)*(0.88806139555258 - 1) << endl<<endl;
 
 
 cout << "Delta w, 1-2 sluoknio: (kadangi pirmos a reiksmes 0 0, tai nera pirmu 10 dw reiksmiu)"<<endl;
