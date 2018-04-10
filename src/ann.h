@@ -3,6 +3,121 @@
 
 #include <helper_cuda.h>
 #include <cmath>
+#include <cstdlib>
+
+#include <cmath>
+#include <math.h>
+#include <vector>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <string>
+#include <array>
+
+class Topology {
+	private:
+		std::vector<int> *ml;
+	public:
+		Topology();
+		~Topology();
+		void addLayer(int size);
+
+		int getLayerCount();
+		int getLayerSize(int index);
+
+		int obtainNeuronCount();
+		int obtainWeightCount();
+
+		// int getInputNeuronCount();
+		// int getOutputNeuronCount();
+
+
+
+};
+
+class AnnBase {
+public:
+	virtual void prepare(Topology *top, double alpha, double eta) = 0;
+	virtual void init(double w_arr_1[]) = 0;
+	virtual void train(double *a, double *b) = 0;
+	virtual void feedForward(double *a, double *b) = 0;
+	virtual void destroy() = 0;
+private:
+	virtual void calc_feedForward() = 0;
+};
+
+class AnnSerialDBL : public AnnBase {
+private:
+	Topology* cTopology;
+	double mAlpha;
+	double mEta;
+
+
+public:
+	void prepare(Topology *top, double alpha, double eta);
+	void init(double w_arr_1[]);
+	void train(double *a, double *b);
+	void feedForward(double *a, double *b);
+	void destroy();
+	AnnSerialDBL() {};
+
+	double* getWeights();
+
+
+private:
+	void calc_feedForward();
+	double delta_w(double grad, double dw);
+
+
+/*private*/
+public:
+	int z_count;//temp var to keep the length of z, so z could be reset for calcs.
+	int input_count;
+	int output_count;
+	int L;
+	int * l;
+	int * s;
+	double * a_arr;
+	double * z_arr;
+	int * W;
+	int * sw;
+	double * w_arr;
+	double * dw_arr;
+	double * t_arr;
+	double * gjl;
+};
+
+
+struct Sample
+{
+	double * input;
+	double * output;
+};
+
+class Data
+{
+public:
+	int getNumberOfInputs() { return inputs; }
+	int getNumberOfOutputs() { return outputs; }
+
+	double * getInput(int index);
+
+	double * getOutput(int index);
+
+	int getNumberOfSamples() { return samples; }
+
+	void addSample(Sample sample);
+
+	void setSizes(int input_size, int output_size);
+
+protected:
+	std::vector<Sample> data;
+	int inputs;
+	int outputs;
+	int samples = 0;
+};
+
+
 
 
 /* Class definitions here. */

@@ -1,8 +1,10 @@
 #ifndef TESTS_HEADER
 #define TESTS_HEADER
 
-void run_tests();
+#include "ann.h"
 
-/* Definition of test functions here. */  
+bool run_tests();
+
+/* Definition of test functions here. */
 
 #endif /* TESTS_HEADER */

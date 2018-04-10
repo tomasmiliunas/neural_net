@@ -10,7 +10,6 @@ kernel(int n, float *arr){
 	if(idx >= n) return;
 
         arr[idx] *= 2.0f;
-
 }
 
 void run_cuda_sample(){
@@ -35,17 +34,17 @@ void run_cuda_sample(){
 
   printf("n=%d, h=%d, g=%d\n", n, h, g);
 
-    
-  
 
-  
+
+
+
   int bc_arr = sizeof(float)*n;
 
   float *dv_arr = NULL;
 
   checkCudaErrors( cudaMalloc((void **)&dv_arr, bc_arr) );
 
-  checkCudaErrors( cudaMemcpy(dv_arr, arr, bc_arr, cudaMemcpyHostToDevice) ); 
+  checkCudaErrors( cudaMemcpy(dv_arr, arr, bc_arr, cudaMemcpyHostToDevice) );
 
   dim3 grid_dim(g, 1, 1);
   dim3 block_dim(h, 1, 1);
@@ -60,8 +59,7 @@ void run_cuda_sample(){
     printf("[%d] = %f\n", i, arr[i]);
 
   checkCudaErrors( cudaFree(dv_arr) );
- 
+
   checkCudaErrors(cudaDeviceReset());
 
 }
-
