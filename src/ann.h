@@ -28,22 +28,22 @@ class Topology {
 		int obtainNeuronCount();
 		int obtainWeightCount();
 
-		// int getInputNeuronCount();
-		// int getOutputNeuronCount();
+		int getInputNeuronCount();
+		int getOutputNeuronCount();
 };
-
+template <typename T>
 class AnnBase {
 public:
-	virtual void prepare(Topology *top, double alpha, double eta) = 0;
-	virtual void init(double w_arr_1[]) = 0;
-	virtual void train(double *a, double *b) = 0;
-	virtual void feedForward(double *a, double *b) = 0;
+	virtual void prepare(Topology *top, T alpha, T eta) = 0;
+	virtual void init(T w_arr_1[]) = 0;
+	virtual void train(T *a, T *b) = 0;
+	virtual void feedForward(T *a, T *b) = 0;
 	virtual void destroy() = 0;
 private:
 	virtual void calc_feedForward() = 0;
 };
 
-class AnnSerialDBL : public AnnBase {
+class AnnSerialDBL : public AnnBase<double> {
 private:
 	Topology* cTopology;
 	double mAlpha;
@@ -86,7 +86,6 @@ private:
 	void calc_gjl();
 };
 
-
 struct Sample
 {
 	double * input;
@@ -116,7 +115,48 @@ protected:
 	int samples = 0;
 };
 
+class AnnSerialFLT : public AnnBase<float> {
+private:
+	Topology* cTopology;
+	float mAlpha;
+	float mEta;
 
+	int neuronCount;
+	int inputCount;
+	int outputCount;
+	int L;
+	int * l;
+	int * s;
+	float * a_arr;
+	float * z_arr;
+	int * W;
+	int * sw;
+	float * w_arr;
+	float * dw_arr;
+	float * t_arr;
+	float * gjl;
+
+
+public:
+	void prepare(Topology *top, float alpha, float eta);
+	void init(float w_arr_1[]);
+	void train(float *a, float *b);
+	void feedForward(float *a, float *b);
+	void destroy();
+	AnnSerialFLT() {};
+
+	float* getWeights();
+
+
+private:
+	void calc_feedForward();
+	float delta_w(float grad, float dw);
+	float f(float x);
+	float f_deriv(float x);
+	float gL(float a, float z, float t);
+	float w_gradient(int layer_id, int w_i, int w_j);
+	void calc_gjl();
+};
 
 
 /* Class definitions here. */

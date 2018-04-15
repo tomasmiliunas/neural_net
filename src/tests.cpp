@@ -16,7 +16,7 @@ bool test_topology(){
   return true;
 }
 
-bool test_forward(){
+bool test_forward_Double(){
 
   // int arr[] = {2,2,1};
 	// setTopology(topolygy, arr, sizeof(arr)/sizeof(arr[0]));
@@ -73,7 +73,7 @@ bool test_forward(){
   delete topology;
 }
 
-bool test_backward(){
+bool test_backward_Double(){
 
   Topology *topology = new Topology();
   topology->addLayer(2);
@@ -116,8 +116,8 @@ bool test_backward(){
 
 
   double *warr2 = serialDBL->getWeights();
-  // for(int i = 0; i < 9; i++)
-  //   printf("w[%d] = %.20f\n", i, warr2[i]);
+  //for(int i = 0; i < 9; i++)
+  //  printf("w[%d] = %.20f\n", i, warr2[i]);
 
   // w[0] = 0.49771153302267323593
   // w[1] = 0.19935533771596666841
@@ -156,6 +156,144 @@ bool test_backward(){
   delete topology;
 }
 
+bool test_forwardFLT(){
+
+  // int arr[] = {2,2,1};
+
+  Topology *topology = new Topology();
+  topology->addLayer(2);
+  topology->addLayer(2);
+  topology->addLayer(1);
+
+  AnnSerialFLT  *serialFLT = new AnnSerialFLT();
+
+  double alpha = 0.7;
+  double eta = 0.25;
+  serialFLT->prepare(topology, alpha, eta);
+
+  float *warr = new float[9];
+  int idx = 0;
+  warr[idx++] = 0.5;
+  warr[idx++] = 0.2;
+  warr[idx++] = 0.0;
+
+  warr[idx++] = 0.1;
+  warr[idx++] = 0.2;
+  warr[idx++] = 0.7;
+
+  warr[idx++] = 0.9;
+  warr[idx++] = 0.3;
+  warr[idx++] = 0.2;
+
+
+  serialFLT->init(warr);
+
+  float *input = new float[2];
+  input[0] = 1;
+  input[1] = 2;
+
+  float *output = new float[1];
+
+
+	serialFLT->feedForward(input, output);
+
+  //printf("output = %.20f\n", output[0]);
+
+  //              0.7362264983
+  if(output[0] != 0.73622649908065795898) return false;
+
+
+
+  delete [] warr;
+  delete [] input;
+  delete [] output;
+  delete serialFLT;
+  delete topology;
+}
+
+bool test_backwardFLT(){
+
+  Topology *topology = new Topology();
+  topology->addLayer(2);
+  topology->addLayer(2);
+  topology->addLayer(1);
+
+  AnnSerialFLT  *serialFLT = new AnnSerialFLT();
+  float alpha = 0.7;
+  float eta = 0.25;
+  serialFLT->prepare(topology, alpha, eta);
+
+  float *warr = new float[9];
+  int idx = 0;
+  warr[idx++] = 0.5;
+  warr[idx++] = 0.2;
+  warr[idx++] = 0.0;
+
+  warr[idx++] = 0.1;
+  warr[idx++] = 0.2;
+  warr[idx++] = 0.7;
+
+  warr[idx++] = 0.9;
+  warr[idx++] = 0.3;
+  warr[idx++] = 0.2;
+
+
+  serialFLT->init(warr);
+
+  float *input = new float[2];
+  input[0] = 1;
+  input[1] = 2;
+
+  float *output = new float[1];
+  output[0] = 0.5;
+
+
+	serialFLT->train(input, output);
+
+  //printf("output = %.20f\n", output[0]);
+
+
+  float *warr2 = serialFLT->getWeights();
+  //for(int i = 0; i < 9; i++)
+  // printf("w[%d] = %.20f\n", i, warr2[i]);
+
+   // w[0] = 0.49771153926849365234
+   // w[1] = 0.19935533404350280762
+   // w[2] = -0.00457693310454487801
+   // w[3] = 0.09871067851781845093
+   // w[4] = 0.19771154224872589111
+   // w[5] = 0.69935530424118041992
+   // w[6] = 0.89233678579330444336
+   // w[7] = 0.29139557480812072754
+   // w[8] = 0.18853138387203216553
+
+
+  //             0.49771153302267300
+  if(warr2[0] != 0.49771153926849365234) return false;
+  //             0.19935533771596700
+  if(warr2[1] != 0.19935533404350280762) return false;
+  //             -0.00457693395465348
+  if(warr2[2] != -0.00457693310454487801) return false;
+  //             0.09871067543193330
+  if(warr2[3] != 0.09871067851781845093) return false;
+  //             0.19771153302267300
+  if(warr2[4] != 0.19771154224872589111) return false;
+  //             0.69935533771596700
+  if(warr2[5] != 0.69935530424118041992) return false;
+  //             0.89233680716791600
+  if(warr2[6] != 0.89233678579330444336) return false;
+  //             0.29139555061784700
+  if(warr2[7] != 0.29139557480812072754) return false;
+  //             0.18853137822738400
+  if(warr2[8] != 0.18853138387203216553) return false;
+
+  delete [] warr;
+  delete [] input;
+  delete [] output;
+  delete serialFLT;
+  delete topology;
+}
+
 bool run_tests(){
 
   printf("running tests ... \n");
@@ -166,13 +304,18 @@ bool run_tests(){
   printf("%s - test_topology\n", passed ? "PASSED" : "FAILED");
 
 
-  passed = test_forward(); failCount += passed ? 0 : 1;
-  printf("%s - test_forward\n", passed ? "PASSED" : "FAILED");
+  passed = test_forward_Double(); failCount += passed ? 0 : 1;
+  printf("%s - test_forward_Double\n", passed ? "PASSED" : "FAILED");
 
 
-  passed = test_backward(); failCount += passed ? 0 : 1;
-  printf("%s - test_backward\n", passed ? "PASSED" : "FAILED");
+  passed = test_backward_Double(); failCount += passed ? 0 : 1;
+  printf("%s - test_backward_Double\n", passed ? "PASSED" : "FAILED");
 
+  passed = test_forwardFLT(); failCount += passed ? 0 : 1;
+  printf("%s - test_forward_Float\n", passed ? "PASSED" : "FAILED");
+
+  passed = test_backwardFLT(); failCount += passed ? 0 : 1;
+  printf("%s - test_backward_Float\n", passed ? "PASSED" : "FAILED");
 
   printf("\n");
   if(failCount == 0) printf("ALL tests PASSED\n");
