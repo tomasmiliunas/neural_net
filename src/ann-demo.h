@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class XOR : public Data
+class XOR : public Data_Double
 {
 public:
 	void generate(int n);
@@ -16,6 +16,24 @@ public:
 	int getResult(int index);
 
 	XOR()
+	{
+		inputs = 2;
+		outputs = 2;
+		samples = 0;
+	}
+	void printInputs(int index);
+
+	void printOutputs(int index);
+};
+
+class XOR_Float : public Data_Float
+{
+public:
+	void generate(int n);
+
+	int getResult(int index);
+
+	XOR_Float()
 	{
 		inputs = 2;
 		outputs = 2;

@@ -96,23 +96,23 @@ void AnnSerialDBL::calc_gjl()
 }
 
 //*********
-double * Data::getInput(int index)
+double * Data_Double::getInput(int index)
 {
 	return data[index].input;
 }
 
-double * Data::getOutput(int index)
+double * Data_Double::getOutput(int index)
 {
 	return data[index].output;
 }
 
-void Data::addSample(Sample sample)
+void Data_Double::addSample(Sample_Double sample)
 {
 	data.push_back(sample);
 	samples++;
 }
 
-void Data::setSizes(int input_size, int output_size)
+void Data_Double::setSizes(int input_size, int output_size)
 {
 	inputs = input_size;
 	outputs = output_size;
@@ -344,27 +344,27 @@ void AnnSerialFLT::calc_gjl()
 }
 
 //*********
-// float * Data::getInput(int index)
-// {
-// 	return data[index].input;
-// }
-//
-// float * Data::getOutput(int index)
-// {
-// 	return data[index].output;
-// }
-//
-// void Data::addSample(Sample sample)
-// {
-// 	data.push_back(sample);
-// 	samples++;
-// }
-//
-// void Data::setSizes(int input_size, int output_size)
-// {
-// 	inputs = input_size;
-// 	outputs = output_size;
-// }
+float * Data_Float::getInput(int index)
+{
+	return data[index].input;
+}
+
+float * Data_Float::getOutput(int index)
+{
+	return data[index].output;
+}
+
+void Data_Float::addSample(Sample_Float sample)
+{
+	data.push_back(sample);
+	samples++;
+}
+
+void Data_Float::setSizes(int input_size, int output_size)
+{
+	inputs = input_size;
+	outputs = output_size;
+}
 
 //****************
 

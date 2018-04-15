@@ -86,13 +86,13 @@ private:
 	void calc_gjl();
 };
 
-struct Sample
+struct Sample_Double
 {
 	double * input;
 	double * output;
 };
 
-class Data
+class Data_Double
 {
 public:
 	int getNumberOfInputs() { return inputs; }
@@ -104,12 +104,12 @@ public:
 
 	int getNumberOfSamples() { return samples; }
 
-	void addSample(Sample sample);
+	void addSample(Sample_Double sample);
 
 	void setSizes(int input_size, int output_size);
 
 protected:
-	std::vector<Sample> data;
+	std::vector<Sample_Double> data;
 	int inputs;
 	int outputs;
 	int samples = 0;
@@ -158,6 +158,34 @@ private:
 	void calc_gjl();
 };
 
+struct Sample_Float
+{
+	float * input;
+	float * output;
+};
+
+class Data_Float
+{
+public:
+	int getNumberOfInputs() { return inputs; }
+	int getNumberOfOutputs() { return outputs; }
+
+	float * getInput(int index);
+
+	float * getOutput(int index);
+
+	int getNumberOfSamples() { return samples; }
+
+	void addSample(Sample_Float sample);
+
+	void setSizes(int input_size, int output_size);
+
+protected:
+	std::vector<Sample_Float> data;
+	int inputs;
+	int outputs;
+	int samples = 0;
+};
 
 /* Class definitions here. */
 void run_cuda_sample();
