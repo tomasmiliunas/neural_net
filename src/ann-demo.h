@@ -13,6 +13,8 @@ class XOR : public Data
 public:
 	void generate(int n);
 
+	int getResult(int index);
+
 	XOR()
 	{
 		inputs = 2;

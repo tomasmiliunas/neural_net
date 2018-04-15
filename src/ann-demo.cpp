@@ -18,6 +18,22 @@ void XOR::generate(int n)
 	}
 }
 
+int XOR::getResult(int index){
+
+		double max = 0;
+		int index1 = 0;
+
+		double* ats=getOutput(index);
+
+		for (int i = 0; i<outputs; i++) {
+		 	if (max < ats[i]) {
+		 		max = ats[i];
+		 		index1 = i;
+		 	}
+		 }
+		 return index1;
+}
+
 void xor_sample(){
   Topology *topology = new Topology();
 	topology->addLayer(2);
@@ -27,7 +43,7 @@ void xor_sample(){
 
 
 
-	AnnSerialDBL  *SerialDBL=new AnnSerialDBL();
+	AnnSerialDBL* SerialDBL=new AnnSerialDBL();
 
 	double alpha = 0.7;
   double eta = 0.25;
@@ -36,15 +52,10 @@ void xor_sample(){
 	SerialDBL->init(NULL);
 
 	XOR xo;
-	xo.generate(5000);
+	int dataCount=5000;
+	xo.generate(dataCount);
 	SerialDBL->train(xo.getInput(0), xo.getOutput(0));
 
-
-	// file("()a_arr.csv", SerialDBL->a_arr, sum);
-	// file("()z_arr.csv", SerialDBL->z_arr, sum);
-	// file("()w_arr.csv", SerialDBL->w_arr, mult);
-	// file("()dw_arr.csv", SerialDBL->dw_arr, mult);
-	// file("()g_arr.csv", SerialDBL->gjl, sum);
 
 	for (int i = 1; i < xo.getNumberOfSamples(); i++) {
 		SerialDBL->train(xo.getInput(i), xo.getOutput(i));
@@ -55,17 +66,19 @@ void xor_sample(){
 		for (double j = 0; j < 2; j++) {
 			double input[] = { i ,j };
 			double output[] = { 0,0 };
-			SerialDBL->feedForward(input, output);
 
-			cout << endl << "input : " << input[0] << "   " << input[1] << endl;
-			cout << endl << "output: " << output[0] << "   " << output[1] << endl << endl;
-			cout << "---------------------------------------------------" << endl;
+			SerialDBL->feedForward(input, output);
+			Sample temp={input,output};
+			xo.addSample(temp);
+			printf("inout:  %.2f  %.2f\n",xo.getInput(dataCount+i*2+j)[0],xo.getInput(dataCount+i*2+j)[1] );
+			printf("output: %.2f  %.2f\n",xo.getOutput(dataCount+i*2+j)[0],xo.getOutput(dataCount+i*2+j)[1] );
+			printf("Result: %d\n", xo.getResult(dataCount+i*2+j));
+			printf("---------------------------------\n");
 		}
 	}
 
 	SerialDBL->destroy();
 	delete SerialDBL;
-
 }
 
 int main (int c, char *v[]) {

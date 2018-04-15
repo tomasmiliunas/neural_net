@@ -30,9 +30,6 @@ class Topology {
 
 		// int getInputNeuronCount();
 		// int getOutputNeuronCount();
-
-
-
 };
 
 class AnnBase {
@@ -52,6 +49,21 @@ private:
 	double mAlpha;
 	double mEta;
 
+	int neuronCount;
+	int inputCount;
+	int outputCount;
+	int L;
+	int * l;
+	int * s;
+	double * a_arr;
+	double * z_arr;
+	int * W;
+	int * sw;
+	double * w_arr;
+	double * dw_arr;
+	double * t_arr;
+	double * gjl;
+
 
 public:
 	void prepare(Topology *top, double alpha, double eta);
@@ -67,24 +79,11 @@ public:
 private:
 	void calc_feedForward();
 	double delta_w(double grad, double dw);
-
-
-/*private*/
-public:
-	int z_count;//temp var to keep the length of z, so z could be reset for calcs.
-	int input_count;
-	int output_count;
-	int L;
-	int * l;
-	int * s;
-	double * a_arr;
-	double * z_arr;
-	int * W;
-	int * sw;
-	double * w_arr;
-	double * dw_arr;
-	double * t_arr;
-	double * gjl;
+	double f(double x);
+	double f_deriv(double x);
+	double gL(double a, double z, double t);
+	double w_gradient(int layer_id, int w_i, int w_j);
+	void calc_gjl();
 };
 
 

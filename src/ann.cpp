@@ -3,23 +3,9 @@
 
 // Ann.cpp : Defines the entry point for the console application.
 //
-
-
-
 #include "ann.h"
 
 using namespace std;
-//Generating random number: either 0 or 1, uniform distribution, for XOR operation. Can remove later if using data from files.
-int randint();
-double f(double x);
-double f_deriv(double x);
-double gL(double a, double z, double t);
-double w_gradient(int layer_id, int w_i, int w_j, double *a_arr, int *s, double *gll);
-
-void calc_gjl(double *a_arr, double *z_arr, double *t_arr, double *w_arr, int *s, int *sw, int L, int *l, double *gll);
-// const double ETA = 0.3;
-// const double ALPHA = 0.7;
-void file(string filename, double *a, int dydis);
 
 //
 // Topology
@@ -60,65 +46,42 @@ int Topology::obtainWeightCount(){
 	return count;
 }
 
-
-
-
-
-void print_all(AnnSerialDBL *SerialDBL, int sum, int mult, int i);
-void read_W(string filename, double *w_arr);
-
-
-
-//returns random int, either 0 or 1
-int randint() {
-	double r = ((double)rand() / (RAND_MAX));
-	int a = 0;
-	if (r > 0.5) {
-		a = 1;
-	}
-	else
-	{
-		a = 0;
-	}
-	return a;
-}
-
 /* sudeti funkcijas i private */
 
-double f(double x) {
+double AnnSerialDBL::f(double x) {
 	double y = 1 + exp(-x);
 	return 1 / y;
 }
 
-double f_deriv(double x) {
+double AnnSerialDBL::f_deriv(double x) {
 	return exp(-x) / pow((1 + exp(-x)), 2);
 }
 
-double gL(double a, double z, double t) {
+double AnnSerialDBL::gL(double a, double z, double t) {
 	double w = f_deriv(z) * (a - t);
 	return w;
 }
 
-double w_gradient(int layer_id, int w_i, int w_j, double *a_arr, int *s, double *gll) {
-	return a_arr[s[layer_id] + w_i] * gll[s[layer_id + 1] + w_j];
+double AnnSerialDBL::w_gradient(int layer_id, int w_i, int w_j) {
+	return a_arr[s[layer_id] + w_i] * gjl[s[layer_id + 1] + w_j];
 }
 
 
 
-void calc_gjl(double *a_arr, double *z_arr, double *t_arr, double *w_arr, int *s, int *sw, int L, int *l, double *gll)
+void AnnSerialDBL::calc_gjl()
 {
 	for (int i = L - 1; i >= 0; i--) {
 		for (int j = 0; j < l[i]-1; j++) {
 			if (L - 1 == i) {
-				gll[s[i] + j] = gL(a_arr[s[i] + j], z_arr[s[i] + j], t_arr[j]);
+				gjl[s[i] + j] = gL(a_arr[s[i] + j], z_arr[s[i] + j], t_arr[j]);
 			}
 			else {
-				gll[s[i] + j] = f_deriv(z_arr[s[i] + j]);
+				gjl[s[i] + j] = f_deriv(z_arr[s[i] + j]);
 				double sum = 0;
 				for (int k = 0; k < l[i + 1] - 1; k++) {
-					sum += w_arr[sw[i] + j*(l[i + 1] - 1) + k] * gll[s[i + 1] + k];
+					sum += w_arr[sw[i] + j*(l[i + 1] - 1) + k] * gjl[s[i + 1] + k];
 				}
-				gll[s[i] + j] *= sum;
+				gjl[s[i] + j] *= sum;
 			}
 		}
 	}
@@ -157,13 +120,13 @@ void AnnSerialDBL::prepare(Topology *top, double alpha, double eta)
 	mAlpha = alpha;
 	mEta = eta;
 
-	input_count = top->getLayerSize(0);
-	output_count = top->getLayerSize(top->getLayerCount() - 1);
+	inputCount = top->getLayerSize(0);
+	outputCount = top->getLayerSize(top->getLayerCount() - 1);
 
 	l = new int[top->getLayerCount()];
 	s = new int[top->getLayerCount()];
 
-	int neuronCount = cTopology->obtainNeuronCount();
+	neuronCount = cTopology->obtainNeuronCount();
 	int weightCount = cTopology->obtainWeightCount();
 
 	a_arr = new double[neuronCount];
@@ -182,12 +145,11 @@ void AnnSerialDBL::prepare(Topology *top, double alpha, double eta)
 
 void AnnSerialDBL::init(double w_arr_1[] = NULL)
 {
-	L = cTopology->getLayerCount();
-	Topology *top = cTopology;
+  L = cTopology->getLayerCount();
 
 	//Neuronu kiekiai sluoksnyje
 	for (int i = 0; i < L; i++) {
-		l[i] = top->getLayerSize(i) + 1;
+		l[i] = cTopology->getLayerSize(i) + 1;
 	}
 
 	//Sluoksniu pradzios indeksai
@@ -230,26 +192,26 @@ void AnnSerialDBL::init(double w_arr_1[] = NULL)
 
 void AnnSerialDBL::train(double *a, double *b)
 {
-	for (int i = 0; i < input_count; i++) {
+	for (int i = 0; i < inputCount; i++) {
 		a_arr[i] = a[i];
 	}
 
-	for (int j = 0; j < z_count; j++) {
+	for (int j = 0; j < neuronCount; j++) {
 		z_arr[j] = 0;
 	}
 
 	calc_feedForward();
 
-	for (int i = 0; i < output_count; i++) {
+	for (int i = 0; i < outputCount; i++) {
 		t_arr[i] = b[i];
 	}
-	calc_gjl(a_arr, z_arr, t_arr, w_arr, s, sw, L, l, gjl);
+	calc_gjl();
 
 	//back propogation:
 	for (int i = 0; i <L - 1; i++) {//per sluoksnius
 		for (int j = 0; j < l[i]; j++) {//per neuronus
 			for (int k = 0; k < l[i + 1] - 1; k++) {//per kito sluoksnio neuronus
-				dw_arr[sw[i] + k + j*(l[i + 1] - 1)] = delta_w(w_gradient(i, j, k, a_arr, s, gjl), dw_arr[sw[i] + k + j*(l[i + 1] - 1)]);
+				dw_arr[sw[i] + k + j*(l[i + 1] - 1)] = delta_w(w_gradient(i, j, k), dw_arr[sw[i] + k + j*(l[i + 1] - 1)]);
 				w_arr[sw[i] + k + j*(l[i + 1] - 1)] += dw_arr[sw[i] + k + j*(l[i + 1] - 1)];
 			}
 		}
@@ -258,37 +220,18 @@ void AnnSerialDBL::train(double *a, double *b)
 
 void AnnSerialDBL::feedForward(double *a, double *b)
 {
-	for (int i = 0; i < input_count; i++) {
+	for (int i = 0; i < inputCount; i++) {
 		a_arr[i] = a[i];
 	}
 
-	for (int j = 0; j < z_count; j++) {
+	for (int j = 0; j < neuronCount; j++) {
 		z_arr[j] = 0;
 	}
 
 	calc_feedForward();
 
-	double max = 0;
-	int index = 0;
-
-	for (int i = 0; i<output_count; i++)
+	for (int i = 0; i<outputCount; i++)
 		b[i] = a_arr[s[L - 1] + i];
-
-	// for (int i = 0; i<output_count; i++) {
-	// 	cout << " a reiksmes: " << a_arr[s[L - 1] + i] << endl;
-	// 	if (max < a_arr[s[L - 1] + i]) {
-	// 		max = a_arr[s[L - 1] + i];
-	// 		index = i;
-	// 	}
-	// }
-	// for (int i = 0; i < output_count; i++) {
-	// 	if (i == index) {
-	// 		b[i] = 1;
-	// 	}
-	// 	else {
-	// 		b[i] = 0;
-	// 	}
-	// }
 }
 
 void AnnSerialDBL::calc_feedForward()
@@ -341,29 +284,3 @@ double* AnnSerialDBL::getWeights(){
 double AnnSerialDBL::delta_w(double grad, double dw) {
 	return -mEta*grad + mAlpha*dw;
 }
-
-// void read_W(string filename, double *w_arr) {
-// 	ifstream myReadFile;
-// 	myReadFile.open(filename);
-// 	string a;
-// 	if (myReadFile.is_open()) {
-// 		int i = 0;
-// 		while (!myReadFile.eof()) {
-// 			myReadFile >> a;
-// 			w_arr[i++] = stod(a);
-// 		}
-// 	}
-// 	myReadFile.close();
-// }
-
-
-
-// void file(string filename, double *a, int dydis) {
-// 	ofstream myfile;
-// 	myfile.open(filename);
-// 	myfile << filename << ";" << endl;
-// 	for (int i = 0; i < dydis; i++) {
-// 		myfile <<setprecision(16)<< a[i] << ";" << endl;
-// 	}
-// 	myfile.close();
-// }
