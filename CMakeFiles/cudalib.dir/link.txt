@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC -O3 -fopenmp --std=c++11  -shared -Wl,-soname,libcudalib.so -o libcudalib.so  -Wl,-Bstatic -lcudart_static -Wl,-Bdynamic -lpthread -ldl -lrt -Wl,-Bstatic -lcudart_static -Wl,-Bdynamic -lpthread -ldl -lrt 

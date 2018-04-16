@@ -1,7 +1,7 @@
 #ifndef ANN_HEADER
 #define ANN_HEADER
 
-#include <helper_cuda.h>
+//#include <helper_cuda.h>
 #include <cmath>
 #include <cstdlib>
 
@@ -188,6 +188,6 @@ protected:
 };
 
 /* Class definitions here. */
-void run_cuda_sample();
+//void run_cuda_sample();
 
 #endif /* ANN_HEADER */

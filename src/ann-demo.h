@@ -44,4 +44,23 @@ public:
 	void printOutputs(int index);
 };
 
+//************************************************************************
+//                           Paveiksliukai
+//************************************************************************
+
+class PictureData : public Data
+{
+public:
+    PictureData()
+    {
+        inputs = 756;
+        outputs = 10;
+        samples = 0;
+    }
+    void readMnist(string filename, vector<double*> &arr);
+    void readMnistLabel(string filename, vector<double> &vec);
+};
+
+//************************************************************************
+
 #endif /* ANN_DEMO_HEADER */

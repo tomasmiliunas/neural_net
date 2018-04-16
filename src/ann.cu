@@ -2,7 +2,7 @@
 
 
 
-
+/*
 __global__ void
 kernel(int n, float *arr){
 
@@ -63,3 +63,5 @@ void run_cuda_sample(){
   checkCudaErrors(cudaDeviceReset());
 
 }
+
+*/

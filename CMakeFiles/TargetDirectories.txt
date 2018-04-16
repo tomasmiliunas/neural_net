@@ -1,0 +1,4 @@
+/home/tomas/Documents/Projektas/netPics/neural_net_pics/CMakeFiles/edit_cache.dir
+/home/tomas/Documents/Projektas/netPics/neural_net_pics/CMakeFiles/rebuild_cache.dir
+/home/tomas/Documents/Projektas/netPics/neural_net_pics/CMakeFiles/ann-demo.dir
+/home/tomas/Documents/Projektas/netPics/neural_net_pics/CMakeFiles/cudalib.dir
